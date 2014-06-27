@@ -18,6 +18,12 @@ public class World extends AbstractNode {
 	@Indexed
 	public int moons;
 
+    @Indexed
+    public Double lat;
+
+    @Indexed
+    public Double lon;
+
 	@Fetch
 	@RelatedTo(type = "REACHABLE_BY_ROCKET", direction = Direction.OUTGOING)
 	public Set<World> reachableByRocket;
@@ -25,6 +31,8 @@ public class World extends AbstractNode {
 	public World(String name, int moons) {
 		this.name = name;
 		this.moons = moons;
+        this.lat = 13.76;
+        this.lon = 55.56;
 	}
 
 	public World() {

@@ -4,7 +4,7 @@ import play.Project._
 
 object ApplicationBuild extends Build {
 
-  val appName         = "playframework-neo4j-template"
+  val appName         = "GamePool1"
   val appVersion      = "1.0"
 
   val appDependencies = Seq(

@@ -109,7 +109,7 @@ public class GalaxyService {
 		return result;
 	}
 	
-	private World createWorld(String name, int moons) {
+	public World createWorld(String name, int moons) {
 		return worldRepository.save(new World(name, moons));
 	}
 
