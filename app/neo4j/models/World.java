@@ -1,5 +1,6 @@
 package neo4j.models;
 
+import org.geotools.data.shapefile.indexed.IndexType;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.RelationshipType;
 import org.springframework.data.neo4j.annotation.Fetch;

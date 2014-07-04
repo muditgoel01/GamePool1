@@ -1,4 +1,4 @@
-@(worlds: java.util.List[neo4j.models.World], path: java.util.List[neo4j.models.World])
+@(message: String)
 
 @main(title = "PlayFramework SpringData Neo4j Template by @tomasmuller") {
 
@@ -9,36 +9,7 @@
 			</div>
 			<div class="row">
 				<div>
-					<fieldset>
-						<legend>Here are some objects/relations we just created</legend>
-						<table class="table table-hover">
-							<thead>
-								<tr>
-									<th></th>
-									<th></th>
-									<th></th>
-									<th>Reachable by rocket</th>
-								</tr>
-							</thead>
-							<tbody>
-								@for(world <- worlds) {
-								<tr>
-									<td>@world.id</td>
-									<td>@world.name</td>
-									<td>@world.moons</td>
-									<td>@for(otherWorld <- world.reachableByRocket) {
-										@otherWorld.name }</td>
-								</tr>
-								}
-							</tbody>
-						</table>
-						<legend>And the path from @worlds(0).name to @worlds(worlds.size -1).name</legend>
-						<ul class="breadcrumb">
-							@for(pathWorld <- path) {
-								<li><a href="#">@pathWorld.name</a> <span class="divider">/</span></li>
-							}
-						</ul>
-					</fieldset>
+					@message
 				</div>
 			</div>
 		</div>

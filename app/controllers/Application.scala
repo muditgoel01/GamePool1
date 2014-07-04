@@ -19,6 +19,6 @@ object Application extends Controller {
     def last: World = allWorlds.get(allWorlds.size() - 1)
     def pathFromFirstToLast: java.util.List[World] = galaxyService.getWorldPath(first, last)
 
-    Ok(views.html.index.render(allWorlds, pathFromFirstToLast))
+    Ok(views.html.indexGalaxy.render(allWorlds, pathFromFirstToLast))
   }
 }
