@@ -25,8 +25,8 @@ public class User extends AbstractNode {
     @Indexed(indexName="userLocation", indexType= IndexType.POINT)
     private String wkt;
 
-    private Double lat;
-    private Double lon;
+    private Double latitude;
+    private Double longitude;
 
     @Fetch
 	@RelatedTo(type = "UserRelationships.POSTED", direction = Direction.OUTGOING)
@@ -47,7 +47,7 @@ public class User extends AbstractNode {
 
 	@Override
 	public String toString() {
-		return "User{facebookId="+facebookId+",lat="+lat+",lon="+lon+"}";
+		return "User{facebookId="+facebookId+",latitude="+latitude+",longitude="+longitude+"}";
 	}
 
 
@@ -68,21 +68,21 @@ public class User extends AbstractNode {
         this.name = name;
     }
 
-    public Double getLat() {
-        return lat;
+    public Double getLatitude() {
+        return latitude;
     }
 
-    public void setLat(Double lat) {
-        this.lat = lat;
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
         this.updateWkt();
     }
 
-    public Double getLon() {
-        return lon;
+    public Double getLongitude() {
+        return longitude;
     }
 
-    public void setLon(Double lon) {
-        this.lon = lon;
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
         this.updateWkt();
     }
 
@@ -92,13 +92,13 @@ public class User extends AbstractNode {
 
     private void updateWkt()
     {
-        this.wkt = String.format("POINT( %.2f %.2f )", this.getLon(), this.getLat());
+        this.wkt = String.format("POINT( %.2f %.2f )", this.getLongitude(), this.getLatitude());
     }
 
-    public void setWkt(double lon, double lat)
+    public void setWkt(double longitude, double latitude)
     {
-        this.setLon(lon);
-        this.setLat(lat);
+        this.setLongitude(longitude);
+        this.setLatitude(latitude);
         this.updateWkt();
     }
 

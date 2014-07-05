@@ -1,80 +1,107 @@
 package neo4j.services;
 
 
-import neo4j.models.Game;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
+import com.vividsolutions.jts.operation.distance.DistanceOp;
 import neo4j.models.User;
-import neo4j.models.World;
 import neo4j.repositories.UserRepository;
-import neo4j.repositories.WorldRepository;
-import org.neo4j.cypher.javacompat.ExecutionEngine;
+import neo4jplugin.Transactional;
+import org.neo4j.gis.spatial.indexprovider.LayerNodeIndex;
 import org.neo4j.gis.spatial.indexprovider.SpatialIndexProvider;
-import org.neo4j.graphalgo.GraphAlgoFactory;
-import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.index.Index;
+import org.neo4j.graphdb.index.IndexHits;
 import org.neo4j.graphdb.index.IndexManager;
-import org.neo4j.helpers.collection.IteratorUtil;
-import org.neo4j.kernel.Traversal;
+import org.neo4j.helpers.collection.MapUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import org.apache.commons.collections.IteratorUtils;
 
 @Service
 public class UserService {
 
-	@Autowired
-	private UserRepository userRepository;
+    @Autowired
+    public UserRepository userRepository;
 
     @Autowired
-    private GraphDatabaseService graphDatabaseService;
+    public GraphDatabaseService graphDatabaseService;
 
-    private ExecutionEngine engine = new ExecutionEngine(graphDatabaseService);
+    @Autowired
+    public Neo4jTemplate neo4jTemplate;
 
-    private LocationService locationService = new LocationService(graphDatabaseService, "gamePoolSpatialIndex");
 
-
-	public long getNumberOfUsers() {
-		return userRepository.count();
-	}
-	public List<User> getAllUsers() {
-		return new ArrayList<User>(IteratorUtil.asCollection(userRepository.findAll()));
-	}
-
-    public List<Game> getPostedGames(){
-        // https://github.com/neo4j-contrib/spatial/blob/master/src/test/java/org/neo4j/gis/spatial/IndexProviderTest.java
-        // ExecutionEngine engine = new ExecutionEngine(graphDatabaseService);
-        // result = engine.execute( "start n=node(*) where n.name = 'my node' return n, n.name" );
-        // result = engine.execute("start malmo=node:layer1('withinDistance:[56.0, 15.0,1000.0]') match p=malmo--other return malmo, other");
-        // result.iterator().hasNext()
-        // engine.execute("start n=node:layer3('withinDistance:[33.32, 44.44, 5.0]') return n").columnAs("n").hasNext()
-
-        return null;
+    private Index<Node> _index;
+    public Index<Node> getIndex(){
+        if(_index == null){
+            IndexManager indexManager = graphDatabaseService.index();
+            Map<String, String> config = Collections.unmodifiableMap(
+                    MapUtil.stringMap(SpatialIndexProvider.GEOMETRY_TYPE,
+                            LayerNodeIndex.POINT_GEOMETRY_TYPE,
+                            IndexManager.PROVIDER, SpatialIndexProvider.SERVICE_NAME,
+                            LayerNodeIndex.WKT_PROPERTY_KEY,
+                            "wkt"));
+            _index = indexManager.forNodes("userLocation", config);
+        }
+        return _index;
     }
 
-	public List<User> makeSomeUsersAndRelations() {
-		List<User> users = new ArrayList<User>();
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public List<User> getUsersWithinDistance(double latitude, double longitude, double distanceInKm)
+    {
+        // Note the order of latitude and longitude has been reversed below!
 
-		users.add(createUser("fb1"));
-		users.add(createUser("fb2"));
-		users.add(createUser("fb3"));
-		users.add(createUser("fb4"));
+        return IteratorUtils.toList(
+                this.userRepository.findWithinDistance(
+                        UserRepository.USER_GEOSPATIAL_INDEX, longitude, latitude, distanceInKm
+                ).iterator());
+    }
 
-		return users;
-	}
-	
-	public User createUser(String facebookId) {
-        Node userNode = graphDatabaseService.createNode();
-        locationService.addNode(userNode, 55.561, 13.761);
+    @Transactional
+    public Node saveNewUser(Map<String, Object> userParams){
+        // user must have values for wkt and facebookId.
 
-        User user = new User(facebookId);
-        user.setLat(55.561);
-        user.setLon(13.761);
+//        Map<String, Object> params = new HashMap<String, Object>();
+//        params.put("facebookId", user.getFacebookId());
+//        Iterator<Node> users = neo4jTemplate.query("MATCH (u:User) WHERE u.facebookId={facebookId} RETURN u", params)
+//                .to(Node.class).iterator();
+//        if(users.hasNext()){
+//            Node userNode = users.next();
+//            if (userNode.hasProperty("wkt")){
+//                System.out.println("ADDING " + userNode.getProperty("name") + " to userLocation index.");
+//                getIndex().add(userNode, "dummy", "value");
+//            }else{
+//                System.out.println(userNode.getProperty("name") + " NOT ADDED to userLocation index.");
+//            }
+//        }
 
-		return userRepository.save(user);
-	}
+        Collection<String> labels = new ArrayList<String>();
+        labels.add("User");
+        labels.add("_User"); // Needed for Spring Data Neo4j - To prevent IllegalStateException: No primary SDN label exists .. (i.e one with starting  with _)
+
+        // Add node to neo4j graph and (automatically) to User repository
+        Node userNode = neo4jTemplate.createNode(userParams, labels);
+
+        // Add node to spatial index. Node must have 'wkt' property set.
+        getIndex().add(userNode, "dummy", "value");
+
+        return userNode;
+    }
+
+
+
+
 
 }
+
+
+
+
+
