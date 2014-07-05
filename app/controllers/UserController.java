@@ -1,82 +1,93 @@
 package controllers;
 
-import neo4j.repositories.UserRepository;
-import neo4j.services.GalaxyService;
-import neo4j.services.LocationService;
+import neo4j.models.User;
+import neo4j.services.Neo4JServiceProvider;
+import neo4j.services.UserService;
 import neo4jplugin.Transactional;
-import org.neo4j.graphdb.GraphDatabaseService;
+import org.apache.commons.collections.IteratorUtils;
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.index.IndexHits;
-import org.springframework.beans.factory.annotation.Autowired;
+import play.data.DynamicForm;
+import play.data.Form;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Results;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
-public class UserController extends Controller {
+public class UserController extends Controller{
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private UserLocationService userLocationService;
-
-    public final static GalaxyService galaxyService = ApplicationController.galaxyService;
-    public final static GraphDatabaseService graphDatabaseService = ApplicationController.graphDatabaseService;
-    public final static LocationService locationService = ApplicationController.locationService;
+    public final static UserService userService = Neo4JServiceProvider.get().userService;
 
 
-    public @ResponseBody Museum getMuseum(@PathVariable long museumId)
-    {
-        return this.museumRepository.findOne(museumId);
-    }
-
-    /**
-     * Retrieve museum by name
-     *
-     * @param name museum's name
-     * @return
-     */
-    @RequestMapping(value="/name/{name}", method=RequestMethod.GET, produces={"application/xml", "application/json"})
-    public @ResponseBody Museum getMuseumByName(@PathVariable String name)
-    {
-        return this.museumRepository.findMuseumByName(name);
-    }
-
-    /**
-     * Find museums hosting selected artist's artworks
-     *
-     * @param artistId
-     * @return
-     */
-    @RequestMapping(value="/artist/{artistId}", method=RequestMethod.GET, produces={"application/xml", "application/json"})
-    public @ResponseBody List<Museum> getMuseumsForArtist(@PathVariable long artistId)
-    {
-        return this.museumRepository.findMuseumByArtist(artistId);
-    }
-
-    /**
-     * Find museums hosting selected artist's artworks
-     *
-     * @param artistId
-     * @return
-     */
     @Transactional
-    @RequestMapping(value="/lon/{lon}/lat/{lat}/distanceInKm/{distanceInKm}", method=RequestMethod.GET, produces={"application/xml", "application/json"})
-    public @ResponseBody List<Museum> getMuseumsWithinDistance(@PathVariable("lon") double longitude, @PathVariable("lat") double latitude, @PathVariable double distanceInKm)
+    public static Result getUser(long userId)
     {
-        return this.museumService.getMuseumsWithinDistance(longitude, latitude, distanceInKm);
+        User user = userService.userRepository.findOne(userId);
+        return Results.ok(Json.stringify(Json.toJson(user)));
     }
 
-    /**
-     * Retrieve all museums
-     *
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    @RequestMapping(method=RequestMethod.GET, produces={"application/xml", "application/json"})
-    public @ResponseBody List<Museum> getAllMuseums()
+    @Transactional
+    public static Result getUserByFacebookId(String facebookId)
     {
-        return IteratorUtils.toList(this.museumRepository.findAll().iterator());
+        User user = userService.userRepository.findUserByFacebookId(facebookId);
+        return Results.ok(Json.stringify(Json.toJson(user)));
+    }
+
+    @Transactional
+    public static Result getUserByName(String name)
+    {
+        List<User> users = userService.userRepository.findUsersByName(name);
+        return Results.ok(Json.stringify(Json.toJson(users)));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Result getAllUsers()
+    {
+        List<User> users = IteratorUtils.toList(userService.userRepository.findAll().iterator());
+        return Results.ok(Json.stringify(Json.toJson(users)));
+    }
+
+    @Transactional
+    public static Result getUsersWithinDistance(double latitude, double longitude, double distanceInKm)
+    {
+        List<User> users = userService.getUsersWithinDistance(latitude, longitude, distanceInKm);
+        return Results.ok(Json.stringify(Json.toJson(users)));
+    }
+
+    @Transactional
+    public static Result addUser()
+    {
+        DynamicForm requestData = Form.form().bindFromRequest();
+        String facebookId = requestData.get("fid");
+
+        String lat = requestData.get("lat");
+        String lon = requestData.get("lon");
+        Double latitude = Double.parseDouble(lat);
+        Double longitude = Double.parseDouble(lon);
+
+        Node userNode = addUser(facebookId, latitude, longitude);
+
+        return Results.ok(Json.stringify(Json.toJson(userNode)));
+    }
+
+    @Transactional
+    public static Node addUser(String facebookId, double latitude, double longitude)
+    {
+        User user = new User();
+        user.setFacebookId(facebookId);
+        user.setLatitude(latitude);
+        user.setLongitude(longitude);
+
+        Map<String, Object> userParams = new HashMap<String, Object>();
+        userParams.put("facebookId", user.getFacebookId());
+        userParams.put("wkt", user.getWkt());
+
+        Node userNode = userService.saveNewUser(userParams);
+        return userNode;
     }
 
 }
