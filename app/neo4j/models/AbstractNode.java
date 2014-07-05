@@ -9,13 +9,13 @@ import org.springframework.data.neo4j.annotation.GraphId;
 public abstract class AbstractNode {
 
 	@GraphId
-	private Long id;
+	protected Long id;
 
     @CreatedDate
-    private Long createdDate;
+    protected Long createdDate;
 
     @LastModifiedDate
-    private Long lastModifiedDate;
+    protected Long lastModifiedDate;
 
 
 

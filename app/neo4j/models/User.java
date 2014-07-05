@@ -29,7 +29,7 @@ public class User extends AbstractNode {
     private Double longitude;
 
     @Fetch
-	@RelatedTo(type = "UserRelationships.POSTED", direction = Direction.OUTGOING)
+	@RelatedTo(type = "UserEdge.POSTED", direction = Direction.OUTGOING)
 	public Set<GamePost> gamesPosted;
 
 
@@ -41,13 +41,13 @@ public class User extends AbstractNode {
 	}
 
 	public void postGame(String gameId) {
-        GamePost gamePost = new GamePost(facebookId, gameId);
+        GamePost gamePost = new GamePost("FreshStatus");
 		gamesPosted.add(gamePost);
 	}
 
 	@Override
 	public String toString() {
-		return "User{facebookId="+facebookId+",latitude="+latitude+",longitude="+longitude+"}";
+		return "User{id="+id+",facebookId="+facebookId+",latitude="+latitude+",longitude="+longitude+"}";
 	}
 
 

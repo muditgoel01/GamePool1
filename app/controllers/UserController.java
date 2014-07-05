@@ -38,7 +38,7 @@ public class UserController extends Controller{
     }
 
     @Transactional
-    public static Result getUserByName(String name)
+    public static Result getUsersByName(String name)
     {
         List<User> users = userService.userRepository.findUsersByName(name);
         return Results.ok(Json.stringify(Json.toJson(users)));
@@ -89,6 +89,7 @@ public class UserController extends Controller{
         Node userNode = userService.saveNewUser(userParams);
         return userNode;
     }
+
 
 }
 

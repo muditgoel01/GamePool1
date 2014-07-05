@@ -9,9 +9,15 @@ GET     /                                   controllers.ApplicationController.in
 GET     /user/all                           controllers.UserController.getAllUsers()
 GET     /user/id/:id                        controllers.UserController.getUser(id:Long)
 GET     /user/fid/:fid                      controllers.UserController.getUserByFacebookId(fid:String)
-GET     /user/name/:name                    controllers.UserController.getUserByName(name:String)
+GET     /user/name/:name                    controllers.UserController.getUsersByName(name:String)
 GET     /user/within/:lat/:lon/:km          controllers.UserController.getUsersWithinDistance(lat:Double, lon:Double, km:Double)
 POST    /user/new                           controllers.UserController.addUser()
+
+
+GET     /game/userid/:id                    controllers.GameController.getGamesByUser(id:Long)
+GET     /game/within/:lat/:lon/:km          controllers.GameController.getGamesWithinDistance(lat:Double, lon:Double, km:Double)
+
+
 
 
 

@@ -25,7 +25,7 @@ public class GameRequest extends AbstractNode {
 
 
 	@Fetch
-	@RelatedTo(type = "UserRelationships.POSTED", direction = Direction.OUTGOING)
+	@RelatedTo(type = "....REQUESTED", direction = Direction.OUTGOING)
 	public Set<GameRequest> gamesPosted;
 
 	public GameRequest(String byFacebookId, Long forPostId) {

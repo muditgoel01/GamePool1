@@ -16,9 +16,6 @@ public interface UserRepository extends GraphRepository<User>, SpatialRepository
 
     public static final String USER_GEOSPATIAL_INDEX = "userLocation";
 
-    @Query("MATCH (u:User) WHERE u.id={id} RETURN distinct(u) as user")
-    User findUserById(@Param("id") Long id);
-
     @Query("MATCH (u:User) WHERE u.facebookId={facebookId} RETURN distinct(u) as user")
     User findUserByFacebookId(@Param("facebookId") String facebookId);
 

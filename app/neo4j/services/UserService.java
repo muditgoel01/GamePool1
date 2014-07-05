@@ -36,22 +36,6 @@ public class UserService {
     @Autowired
     public Neo4jTemplate neo4jTemplate;
 
-
-    private Index<Node> _index;
-    public Index<Node> getIndex(){
-        if(_index == null){
-            IndexManager indexManager = graphDatabaseService.index();
-            Map<String, String> config = Collections.unmodifiableMap(
-                    MapUtil.stringMap(SpatialIndexProvider.GEOMETRY_TYPE,
-                            LayerNodeIndex.POINT_GEOMETRY_TYPE,
-                            IndexManager.PROVIDER, SpatialIndexProvider.SERVICE_NAME,
-                            LayerNodeIndex.WKT_PROPERTY_KEY,
-                            "wkt"));
-            _index = indexManager.forNodes("userLocation", config);
-        }
-        return _index;
-    }
-
     @Transactional
     @SuppressWarnings("unchecked")
     public List<User> getUsersWithinDistance(double latitude, double longitude, double distanceInKm)
@@ -62,6 +46,13 @@ public class UserService {
                 this.userRepository.findWithinDistance(
                         UserRepository.USER_GEOSPATIAL_INDEX, longitude, latitude, distanceInKm
                 ).iterator());
+    }
+
+    @Transactional
+    public Node getUserNode(Long userId){
+        //Node userNode = graphDatabaseService.getNodeById(userId);
+        Node userNode = neo4jTemplate.getNode(userId);
+        return userNode;
     }
 
     @Transactional
@@ -90,7 +81,7 @@ public class UserService {
         Node userNode = neo4jTemplate.createNode(userParams, labels);
 
         // Add node to spatial index. Node must have 'wkt' property set.
-        getIndex().add(userNode, "dummy", "value");
+        Neo4JServiceProvider.get().getIndex().add(userNode, "dummy", "value");
 
         return userNode;
     }

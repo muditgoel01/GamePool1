@@ -1,6 +1,7 @@
 package neo4j.models;
 
 import org.neo4j.graphdb.Direction;
+import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.neo4j.annotation.Fetch;
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
@@ -9,26 +10,23 @@ import org.springframework.data.neo4j.annotation.RelatedTo;
 import java.util.Set;
 
 @NodeEntity
+@TypeAlias("GamePost")
 public class GamePost extends AbstractNode {
 
     @Indexed
-    private Long id;
-
-    @Indexed
-    private String byFacebookId;
-
-    @Indexed
-    private String gameId;
-
-
+    private String status;
 
 	@Fetch
-	@RelatedTo(type = "UserRelationships.POSTED", direction = Direction.OUTGOING)
-	public Set<GamePost> gamesPosted;
+	@RelatedTo(type = "UserEdge.POSTED", direction = Direction.INCOMING)
+	public Set<User> postedBy;
 
-	public GamePost(String userFacebookId, String gameId) {
-        this.byFacebookId = userFacebookId;
-        this.gameId = gameId;
+    @Fetch
+    @RelatedTo(type = "GameEdge.POSTED", direction = Direction.OUTGOING)
+    public Set<Game> forGame;
+
+
+	public GamePost(String status) {
+        this.status = status;
 	}
 
 	public GamePost() {
@@ -36,7 +34,30 @@ public class GamePost extends AbstractNode {
 
 	@Override
 	public String toString() {
-		return "GamePost{id="+id+",byFacebookId="+byFacebookId+",gameId="+gameId+"}";
+		return "GamePost{id="+id+",status="+status+"}";
 	}
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Set<User> getPostedBy() {
+        return postedBy;
+    }
+
+    public void setPostedBy(Set<User> postedBy) {
+        this.postedBy = postedBy;
+    }
+
+    public Set<Game> getForGame() {
+        return forGame;
+    }
+
+    public void setForGame(Set<Game> forGame) {
+        this.forGame = forGame;
+    }
 }

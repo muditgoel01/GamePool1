@@ -7,5 +7,6 @@ package neo4j.models;
 public enum GameRequestStatus {
     REQUESTED,
     ACCEPTED,
-    COMPLETED
+    COMPLETED,
+    ERROR
 }
