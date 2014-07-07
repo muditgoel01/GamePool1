@@ -33,6 +33,9 @@ public class Neo4JServiceProvider extends ServiceProvider {
     public GamePostService gamePostService;
 
     @Autowired
+    public GameRequestService gameRequestService;
+
+    @Autowired
     public Neo4jTemplate neo4jTemplate;
 
 

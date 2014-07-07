@@ -17,12 +17,12 @@ public class GamePost extends AbstractNode {
     private String status;
 
 	@Fetch
-	@RelatedTo(type = "UserEdge.POSTED", direction = Direction.INCOMING)
-	public Set<User> postedBy;
+	@RelatedTo(type = "POSTED", direction = Direction.INCOMING)
+	public User postedBy; //UserEdge.POSTED
 
     @Fetch
-    @RelatedTo(type = "GameEdge.POSTED", direction = Direction.OUTGOING)
-    public Set<Game> forGame;
+    @RelatedTo(type = "POSTED", direction = Direction.OUTGOING)
+    public Game forGame; //GameEdge.POSTED
 
 
 	public GamePost(String status) {
@@ -45,19 +45,19 @@ public class GamePost extends AbstractNode {
         this.status = status;
     }
 
-    public Set<User> getPostedBy() {
+    public User getPostedBy() {
         return postedBy;
     }
 
-    public void setPostedBy(Set<User> postedBy) {
+    public void setPostedBy(User postedBy) {
         this.postedBy = postedBy;
     }
 
-    public Set<Game> getForGame() {
+    public Game getForGame() {
         return forGame;
     }
 
-    public void setForGame(Set<Game> forGame) {
+    public void setForGame(Game forGame) {
         this.forGame = forGame;
     }
 }

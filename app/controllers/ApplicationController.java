@@ -2,10 +2,7 @@ package controllers;
 
 import neo4j.models.Game;
 import neo4j.models.User;
-import neo4j.services.GamePostService;
-import neo4j.services.GameService;
-import neo4j.services.Neo4JServiceProvider;
-import neo4j.services.UserService;
+import neo4j.services.*;
 import neo4jplugin.Transactional;
 import org.apache.commons.collections.IteratorUtils;
 import org.neo4j.gis.spatial.indexprovider.LayerNodeIndex;
@@ -34,6 +31,7 @@ public class ApplicationController extends play.mvc.Controller {
     public final static UserService userService = Neo4JServiceProvider.get().userService;
     public final static GameService gameService = Neo4JServiceProvider.get().gameService;
     public final static GamePostService gamePostService = Neo4JServiceProvider.get().gamePostService;
+    public final static GameRequestService gameRequestService = Neo4JServiceProvider.get().gameRequestService;
 
     @Transactional
     public static Result index()
@@ -60,13 +58,21 @@ public class ApplicationController extends play.mvc.Controller {
             GamePostController.addGamePost("Fresh4", 8L, 14L);
         }
 
+        if(gameRequestService.gameRequestRepository.count() <= 0){
+            GameRequestController.addGameRequest("Requested", 4L, 19L);
+            GameRequestController.addGameRequest("Requested", 6L, 17L);
+            GameRequestController.addGameRequest("Requested", 10L, 19L);
+        }
+
         List<User> users = IteratorUtils.toList(userService.userRepository.findAll().iterator());
         List<Game> games = IteratorUtils.toList(gameService.gameRepository.findAll().iterator());
         List<Game> gamePosts = IteratorUtils.toList(gamePostService.gamePostRepository.findAll().iterator());
+        List<Game> gameRequests = IteratorUtils.toList(gameRequestService.gameRequestRepository.findAll().iterator());
 
-        return Results.ok("USERS = "+Json.stringify(Json.toJson(users))
-                + " GAMES = " + Json.stringify(Json.toJson(games))
-                + " GAME_POSTS = " + Json.stringify(Json.toJson(gamePosts))
+        return Results.ok("USERS\n"+Json.stringify(Json.toJson(users))
+                + "\n\nGAMES\n" + Json.stringify(Json.toJson(games))
+                + "\n\nGAME_POSTS\n" + Json.stringify(Json.toJson(gamePosts))
+                + "\n\nGAME_REQUESTS\n" + Json.stringify(Json.toJson(gameRequests))
         );
 
         //return ok(views.html.index.render("done"));

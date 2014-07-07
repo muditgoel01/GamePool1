@@ -28,9 +28,13 @@ public class User extends AbstractNode {
     private Double latitude;
     private Double longitude;
 
-    @Fetch
-	@RelatedTo(type = "UserEdge.POSTED", direction = Direction.OUTGOING)
-	public Set<GamePost> gamesPosted;
+//    @Fetch
+//	@RelatedTo(type = "POSTED", direction = Direction.OUTGOING)
+//	public Set<GamePost> gamesPosted;
+//
+//    @Fetch
+//    @RelatedTo(type = "REQUESTED", direction = Direction.OUTGOING)
+//    public Set<GameRequest> gamesRequested;
 
 
 	public User(String facebookId) {
@@ -40,10 +44,10 @@ public class User extends AbstractNode {
 	public User() {
 	}
 
-	public void postGame(String gameId) {
-        GamePost gamePost = new GamePost("FreshStatus");
-		gamesPosted.add(gamePost);
-	}
+//	public void postGame(String gameId) {
+//        GamePost gamePost = new GamePost("FreshStatus");
+//		gamesPosted.add(gamePost);
+//	}
 
 	@Override
 	public String toString() {
@@ -102,15 +106,21 @@ public class User extends AbstractNode {
         this.updateWkt();
     }
 
-    public Set<GamePost> getGamesPosted() {
-        return gamesPosted;
-    }
-
-    public void setGamesPosted(Set<GamePost> gamesPosted) {
-        this.gamesPosted = gamesPosted;
-    }
-
-
+//    public Set<GamePost> getGamesPosted() {
+//        return gamesPosted;
+//    }
+//
+//    public void setGamesPosted(Set<GamePost> gamesPosted) {
+//        this.gamesPosted = gamesPosted;
+//    }
+//
+//    public Set<GameRequest> getGamesRequested() {
+//        return gamesRequested;
+//    }
+//
+//    public void setGamesRequested(Set<GameRequest> gamesRequested) {
+//        this.gamesRequested = gamesRequested;
+//    }
 }
 
 

@@ -7,5 +7,6 @@ import org.neo4j.graphdb.RelationshipType;
  */
 public enum GameEdge implements RelationshipType {
     POSTED,
+    REQUESTED,
     WISHED
 }
