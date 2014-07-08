@@ -50,7 +50,7 @@ public class GameRequestController extends Controller{
         return Results.ok(Json.stringify(Json.toJson(gameRequests)));
     }
 
-    @SuppressWarnings("unchecked")
+    @Transactional
     public static Result getAllGameRequests()
     {
         List<GameRequest> gameRequests = IteratorUtils.toList(gameRequestService.gameRequestRepository.findAll().iterator());
@@ -70,7 +70,7 @@ public class GameRequestController extends Controller{
 
         Node gameRequestNode = addGameRequest(status, requestedByUserId, forGamePostId);
 
-        return Results.ok(Json.stringify(Json.toJson(gameRequestNode)));
+        return Results.ok(Json.stringify(Json.toJson(gameRequestNode.getId())));
     }
 
     @Transactional

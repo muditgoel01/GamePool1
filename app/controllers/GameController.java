@@ -62,7 +62,7 @@ public class GameController extends Controller{
         return Results.ok(Json.stringify(Json.toJson(games)));
     }
 
-    @SuppressWarnings("unchecked")
+    @Transactional
     public static Result getAllGames()
     {
         List<Game> games = IteratorUtils.toList(gameService.gameRepository.findAll().iterator());
@@ -92,7 +92,7 @@ public class GameController extends Controller{
 
         Node gameNode = addGame(title, console, year);
 
-        return Results.ok(Json.stringify(Json.toJson(gameNode)));
+        return Results.ok(Json.stringify(Json.toJson(gameNode.getId())));
     }
 
     @Transactional

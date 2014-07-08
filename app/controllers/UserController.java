@@ -44,7 +44,7 @@ public class UserController extends Controller{
         return Results.ok(Json.stringify(Json.toJson(users)));
     }
 
-    @SuppressWarnings("unchecked")
+    @Transactional
     public static Result getAllUsers()
     {
         List<User> users = IteratorUtils.toList(userService.userRepository.findAll().iterator());
@@ -71,7 +71,7 @@ public class UserController extends Controller{
 
         Node userNode = addUser(facebookId, latitude, longitude);
 
-        return Results.ok(Json.stringify(Json.toJson(userNode)));
+        return Results.ok(Json.stringify(Json.toJson(userNode.getId())));
     }
 
     @Transactional

@@ -54,7 +54,7 @@ public class GamePostController extends Controller{
         return Results.ok(Json.stringify(Json.toJson(gamePosts)));
     }
 
-    @SuppressWarnings("unchecked")
+    @Transactional
     public static Result getAllGamePosts()
     {
         List<GamePost> gamePosts = IteratorUtils.toList(gamePostService.gamePostRepository.findAll().iterator());
@@ -74,7 +74,7 @@ public class GamePostController extends Controller{
 
         Node gamePostNode = addGamePost(status, postedByUserId, forGameId);
 
-        return Results.ok(Json.stringify(Json.toJson(gamePostNode)));
+        return Results.ok(Json.stringify(Json.toJson(gamePostNode.getId())));
     }
 
     @Transactional
