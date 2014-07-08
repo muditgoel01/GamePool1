@@ -12,12 +12,32 @@ GET     /user/fid/:fid                      controllers.UserController.getUserBy
 GET     /user/name/:name                    controllers.UserController.getUsersByName(name:String)
 GET     /user/within/:lat/:lon/:km          controllers.UserController.getUsersWithinDistance(lat:Double, lon:Double, km:Double)
 POST    /user/new                           controllers.UserController.addUser()
+POST    /user/id/:id/update                 controllers.UserController.updateUser(id:Long)
+POST    /user/id/:id/delete                 controllers.UserController.deleteUser(id:Long)
 
 
+GET     /game/all                           controllers.GameController.getAllGames()
+GET     /game/id/:id                        controllers.GameController.getGame(id:Long)
+GET     /game/title/:title                  controllers.GameController.getGamesByTitle(title:String)
+GET     /game/console/:console              controllers.GameController.getGamesByConsole(console:String)
+GET     /game/year/:year                    controllers.GameController.getGamesByYear(year:Integer)
 GET     /game/userid/:id                    controllers.GameController.getGamesByUser(id:Long)
 GET     /game/within/:lat/:lon/:km          controllers.GameController.getGamesWithinDistance(lat:Double, lon:Double, km:Double)
+POST    /game/new                           controllers.GameController.addGame()
 
 
+GET     /gamepost/all                           controllers.GamePostController.getAllGamePosts()
+GET     /gamepost/id/:id                        controllers.GamePostController.getGamePost(id:Long)
+GET     /gamepost/status/:status                controllers.GamePostController.getGamePostsByStatus(status:String)
+GET     /gamepost/userid/:id                    controllers.GamePostController.getGamePostsByUser(id:Long)
+POST    /gamepost/new                           controllers.GamePostController.addGamePost()
+
+
+GET     /gamerequest/all                           controllers.GameRequestController.getAllGameRequests()
+GET     /gamerequest/id/:id                        controllers.GameRequestController.getGameRequest(id:Long)
+GET     /gamerequest/status/:status                controllers.GameRequestController.getGameRequestsByStatus(status:String)
+GET     /gamerequest/userid/:id                    controllers.GameRequestController.getGameRequestsByUser(id:Long)
+POST    /gamerequest/new                           controllers.GameRequestController.addGameRequest()
 
 
 

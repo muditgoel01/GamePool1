@@ -37,9 +37,16 @@ public class GameRequestController extends Controller{
     }
 
     @Transactional
-    public static Result getGameRequestsByTitle(String status)
+    public static Result getGameRequestsByStatus(String status)
     {
         List<GameRequest> gameRequests = gameRequestService.gameRequestRepository.findGameRequestsByStatus(status);
+        return Results.ok(Json.stringify(Json.toJson(gameRequests)));
+    }
+
+    @Transactional
+    public static Result getGameRequestsByUser(Long userId)
+    {
+        List<GameRequest> gameRequests = gameRequestService.gameRequestRepository.findGameRequestsByUser(userId);
         return Results.ok(Json.stringify(Json.toJson(gameRequests)));
     }
 

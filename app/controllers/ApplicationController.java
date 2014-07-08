@@ -69,11 +69,12 @@ public class ApplicationController extends play.mvc.Controller {
         List<Game> gamePosts = IteratorUtils.toList(gamePostService.gamePostRepository.findAll().iterator());
         List<Game> gameRequests = IteratorUtils.toList(gameRequestService.gameRequestRepository.findAll().iterator());
 
-        return Results.ok("USERS\n"+Json.stringify(Json.toJson(users))
+        return Results.ok(views.html.index.render(
+                "\nUSERS\n"+Json.stringify(Json.toJson(users))
                 + "\n\nGAMES\n" + Json.stringify(Json.toJson(games))
                 + "\n\nGAME_POSTS\n" + Json.stringify(Json.toJson(gamePosts))
                 + "\n\nGAME_REQUESTS\n" + Json.stringify(Json.toJson(gameRequests))
-        );
+        ));
 
         //return ok(views.html.index.render("done"));
     }

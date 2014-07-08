@@ -44,16 +44,10 @@ public class User extends AbstractNode {
 	public User() {
 	}
 
-//	public void postGame(String gameId) {
-//        GamePost gamePost = new GamePost("FreshStatus");
-//		gamesPosted.add(gamePost);
-//	}
-
 	@Override
 	public String toString() {
 		return "User{id="+id+",facebookId="+facebookId+",latitude="+latitude+",longitude="+longitude+"}";
 	}
-
 
 
     public String getFacebookId() {
@@ -106,21 +100,6 @@ public class User extends AbstractNode {
         this.updateWkt();
     }
 
-//    public Set<GamePost> getGamesPosted() {
-//        return gamesPosted;
-//    }
-//
-//    public void setGamesPosted(Set<GamePost> gamesPosted) {
-//        this.gamesPosted = gamesPosted;
-//    }
-//
-//    public Set<GameRequest> getGamesRequested() {
-//        return gamesRequested;
-//    }
-//
-//    public void setGamesRequested(Set<GameRequest> gamesRequested) {
-//        this.gamesRequested = gamesRequested;
-//    }
 }
 
 

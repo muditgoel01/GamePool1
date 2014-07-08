@@ -75,6 +75,48 @@ public class UserController extends Controller{
     }
 
     @Transactional
+    public static Result updateUser(Long userId)
+    {
+        DynamicForm requestData = Form.form().bindFromRequest();
+
+        Map<String, Object> userParams = new HashMap<String, Object>();
+
+
+        String facebookId = requestData.get("fid");
+        if(facebookId != null && !facebookId.isEmpty()){
+            userParams.put("facebookId", facebookId);
+        }
+
+        String lat = requestData.get("lat");
+        if(lat != null && !lat.isEmpty()){
+            Double latitude = Double.parseDouble(lat);
+            userParams.put("latitude", latitude);
+        }
+
+        String lon = requestData.get("lon");
+        if(lon != null && !lon.isEmpty()){
+            Double longitude = Double.parseDouble(lon);
+            userParams.put("longitude", longitude);
+        }
+
+        User user = updateUser(userId, userParams);
+        return Results.ok(Json.stringify(Json.toJson(user)));
+    }
+
+    @Transactional
+    public static Result deleteUser(Long userId)
+    {
+        // TODO Just mark as 'deleted'. Do not actually delete.
+        // TODO Update associated relationships too. (Mark them as 'deleted' too?)
+        // Deletion trigger order:
+        // (1) User > GamePost > GameRequest
+        // (2) Game > GamePost > GameRequest
+        userService.userRepository.delete(userId);
+        return Results.ok("User has been removed.");
+    }
+
+
+    @Transactional
     public static Node addUser(String facebookId, double latitude, double longitude)
     {
         User user = new User();
@@ -88,6 +130,26 @@ public class UserController extends Controller{
 
         Node userNode = userService.saveNewUser(userParams);
         return userNode;
+    }
+
+    @Transactional
+    public static User updateUser(Long userId, Map<String, Object> userParams)
+    {
+        User user = userService.userRepository.findOne(userId);
+
+        // Assumes arguments are valid
+        if(userParams.containsKey("facebookId")){
+            user.setFacebookId((String)userParams.get("facebookId"));
+        }
+        if(userParams.containsKey("latitude")){
+            user.setLatitude((Double) userParams.get("latitude"));
+        }
+        if(userParams.containsKey("longitude")){
+            user.setLongitude((Double) userParams.get("longitude"));
+        }
+
+        userService.userRepository.save(user);
+        return user;
     }
 
 

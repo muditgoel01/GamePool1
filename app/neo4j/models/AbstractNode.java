@@ -18,7 +18,7 @@ public abstract class AbstractNode {
     protected Long lastModifiedDate;
 
 
-
+    //public abstract List<String> validate();
 
     public Long getId() {
         return id;
