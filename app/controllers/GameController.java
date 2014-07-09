@@ -1,7 +1,10 @@
 package controllers;
 
 import neo4j.models.Game;
+import neo4j.models.GamePost;
+import neo4j.models.GameRequest;
 import neo4j.models.User;
+import neo4j.services.GamePostService;
 import neo4j.services.GameService;
 import neo4j.services.Neo4JServiceProvider;
 import neo4j.services.UserService;
@@ -25,6 +28,7 @@ public class GameController extends Controller{
 
     public final static GameService gameService = Neo4JServiceProvider.get().gameService;
     public final static UserService userService = Neo4JServiceProvider.get().userService;
+    //public final static GamePostService gamePostService = Neo4JServiceProvider.get().gamePostService;
 
 
     @Transactional
@@ -112,6 +116,69 @@ public class GameController extends Controller{
         return gameNode;
     }
 
+
+    @Transactional
+    public static Result updateGame(Long gameId)
+    {
+        DynamicForm requestData = Form.form().bindFromRequest();
+
+        Map<String, Object> gameParams = new HashMap<String, Object>();
+
+
+        String title = requestData.get("title");
+        if(title != null && !title.isEmpty()){
+            gameParams.put("title", title);
+        }
+
+        String console = requestData.get("console");
+        if(console != null && !console.isEmpty()){
+            gameParams.put("console", console);
+        }
+
+        String yearStr = requestData.get("year");
+        if(yearStr != null && !yearStr.isEmpty()){
+            Integer year = Integer.parseInt(yearStr);
+            gameParams.put("year", year);
+        }
+
+        Game game = updateGame(gameId, gameParams);
+        return Results.ok(Json.stringify(Json.toJson(game)));
+    }
+
+    @Transactional
+    public static Game updateGame(Long gameId, Map<String, Object> gameParams)
+    {
+        Game game = gameService.gameRepository.findOne(gameId);
+
+        // Assumes arguments are valid
+        if(gameParams.containsKey("title")){
+            game.setTitle((String) gameParams.get("title"));
+        }
+        if(gameParams.containsKey("console")){
+            game.setConsole((String) gameParams.get("console"));
+        }
+        if(gameParams.containsKey("year")){
+            game.setYear((Integer) gameParams.get("year"));
+        }
+
+        gameService.gameRepository.save(game);
+        return game;
+    }
+
+
+//    @Transactional
+//    public static Result deleteGame(Long gameId)
+//    {
+//        // TODO Just mark as 'deleted'. Do not actually delete.
+//        // TODO Update associated relationships too. (Mark them as 'deleted' too?)
+//        // (2) Game > GamePost > GameRequest (Game will probably never be deleted)
+//        List<GamePost> gamePosts = gamePostService.gamePostRepository.findGamePostsByGame(gameId);
+//        for(GamePost gamePost : gamePosts){
+//            GamePostController.deleteGamePost(gamePost.getId());
+//        }
+//        gameService.gameRepository.delete(gameId);
+//        return Results.ok("Game has been removed.");
+//    }
 
 }
 

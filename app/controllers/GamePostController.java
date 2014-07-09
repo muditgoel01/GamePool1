@@ -2,11 +2,9 @@ package controllers;
 
 import neo4j.models.GameEdge;
 import neo4j.models.GamePost;
+import neo4j.models.GameRequest;
 import neo4j.models.UserEdge;
-import neo4j.services.GamePostService;
-import neo4j.services.GameService;
-import neo4j.services.Neo4JServiceProvider;
-import neo4j.services.UserService;
+import neo4j.services.*;
 import neo4jplugin.Transactional;
 import org.apache.commons.collections.IteratorUtils;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -28,8 +26,7 @@ import java.util.Map;
 public class GamePostController extends Controller{
 
     public final static GamePostService gamePostService = Neo4JServiceProvider.get().gamePostService;
-    public final static GameService gameService = Neo4JServiceProvider.get().gameService;
-    public final static UserService userService = Neo4JServiceProvider.get().userService;
+    //public final static GameRequestService gameRequestService = Neo4JServiceProvider.get().gameRequestService;
     public final static Neo4jTemplate neo4jTemplate = Neo4JServiceProvider.get().neo4jTemplate;
 
 
@@ -97,6 +94,19 @@ public class GamePostController extends Controller{
         return gamePostNode;
     }
 
+//    @Transactional
+//    public static Result deleteGamePost(Long gamePostId)
+//    {
+//        // TODO Just mark as 'deleted'. Do not actually delete.
+//        // TODO Update associated relationships too. (Mark them as 'deleted' too?)
+//        // User > GamePost > GameRequest
+//        List<GameRequest> gameRequests = gameRequestService.gameRequestRepository.findGameRequestsByGamePost(gamePostId);
+//        for(GameRequest gameRequest : gameRequests){
+//            GameRequestController.deleteGameRequest(gameRequest.getId());
+//        }
+//        gamePostService.gamePostRepository.delete(gamePostId);
+//        return Results.ok("GamePost has been removed.");
+//    }
 
 }
 

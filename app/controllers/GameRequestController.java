@@ -92,7 +92,16 @@ public class GameRequestController extends Controller{
 
         return gameRequestNode;
     }
-
+//
+//    @Transactional
+//    public static Result deleteGameRequest(Long gameRequestId)
+//    {
+//        // TODO Just mark as 'deleted'. Do not actually delete.
+//        // TODO Update associated relationships too. (Mark them as 'deleted' too?)
+//        // User > GamePost > GameRequest
+//        gameRequestService.gameRequestRepository.delete(gameRequestId);
+//        return Results.ok("GameRequest has been removed.");
+//    }
 
 }
 

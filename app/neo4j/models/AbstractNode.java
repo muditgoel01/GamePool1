@@ -4,6 +4,7 @@ package neo4j.models;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.neo4j.annotation.GraphId;
+import org.springframework.data.neo4j.annotation.Indexed;
 
 
 public abstract class AbstractNode {
@@ -16,6 +17,9 @@ public abstract class AbstractNode {
 
     @LastModifiedDate
     protected Long lastModifiedDate;
+
+    @Indexed
+    protected boolean deleted;
 
 
     //public abstract List<String> validate();
@@ -44,6 +48,12 @@ public abstract class AbstractNode {
         this.lastModifiedDate = lastModifiedDate;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
 
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 }
 

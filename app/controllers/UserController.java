@@ -1,6 +1,8 @@
 package controllers;
 
+import neo4j.models.GamePost;
 import neo4j.models.User;
+import neo4j.services.GamePostService;
 import neo4j.services.Neo4JServiceProvider;
 import neo4j.services.UserService;
 import neo4jplugin.Transactional;
@@ -21,6 +23,7 @@ import java.util.Map;
 public class UserController extends Controller{
 
     public final static UserService userService = Neo4JServiceProvider.get().userService;
+    //public final static GamePostService gamePostService = Neo4JServiceProvider.get().gamePostService;
 
 
     @Transactional
@@ -75,6 +78,22 @@ public class UserController extends Controller{
     }
 
     @Transactional
+    public static Node addUser(String facebookId, double latitude, double longitude)
+    {
+        User user = new User();
+        user.setFacebookId(facebookId);
+        user.setLatitude(latitude);
+        user.setLongitude(longitude);
+
+        Map<String, Object> userParams = new HashMap<String, Object>();
+        userParams.put("facebookId", user.getFacebookId());
+        userParams.put("wkt", user.getWkt());
+
+        Node userNode = userService.saveNewUser(userParams);
+        return userNode;
+    }
+
+    @Transactional
     public static Result updateUser(Long userId)
     {
         DynamicForm requestData = Form.form().bindFromRequest();
@@ -104,35 +123,6 @@ public class UserController extends Controller{
     }
 
     @Transactional
-    public static Result deleteUser(Long userId)
-    {
-        // TODO Just mark as 'deleted'. Do not actually delete.
-        // TODO Update associated relationships too. (Mark them as 'deleted' too?)
-        // Deletion trigger order:
-        // (1) User > GamePost > GameRequest
-        // (2) Game > GamePost > GameRequest
-        userService.userRepository.delete(userId);
-        return Results.ok("User has been removed.");
-    }
-
-
-    @Transactional
-    public static Node addUser(String facebookId, double latitude, double longitude)
-    {
-        User user = new User();
-        user.setFacebookId(facebookId);
-        user.setLatitude(latitude);
-        user.setLongitude(longitude);
-
-        Map<String, Object> userParams = new HashMap<String, Object>();
-        userParams.put("facebookId", user.getFacebookId());
-        userParams.put("wkt", user.getWkt());
-
-        Node userNode = userService.saveNewUser(userParams);
-        return userNode;
-    }
-
-    @Transactional
     public static User updateUser(Long userId, Map<String, Object> userParams)
     {
         User user = userService.userRepository.findOne(userId);
@@ -151,6 +141,24 @@ public class UserController extends Controller{
         userService.userRepository.save(user);
         return user;
     }
+
+
+//    @Transactional
+//    public static Result deleteUser(Long userId)
+//    {
+//        // TODO Check for permissions
+//        // TODO Just mark as 'deleted'. Do not actually delete.
+//        // TODO Update associated relationships too. (Mark them as 'deleted' too?)
+//        // Deletion trigger order:
+//        // (1) User > GamePost > GameRequest
+//        // (2) Game > GamePost > GameRequest (Game will probably never be deleted)
+//        List<GamePost> gamePosts = gamePostService.gamePostRepository.findGamePostsByUser(userId);
+//        for(GamePost gamePost : gamePosts){
+//            GamePostController.deleteGamePost(gamePost.getId());
+//        }
+//        userService.userRepository.delete(userId);
+//        return Results.ok("User has been removed.");
+//    }
 
 
 }

@@ -13,7 +13,7 @@ GET     /user/name/:name                    controllers.UserController.getUsersB
 GET     /user/within/:lat/:lon/:km          controllers.UserController.getUsersWithinDistance(lat:Double, lon:Double, km:Double)
 POST    /user/new                           controllers.UserController.addUser()
 POST    /user/id/:id/update                 controllers.UserController.updateUser(id:Long)
-POST    /user/id/:id/delete                 controllers.UserController.deleteUser(id:Long)
+#POST    /user/id/:id/delete                 controllers.UserController.deleteUser(id:Long)
 
 
 GET     /game/all                           controllers.GameController.getAllGames()
@@ -24,6 +24,8 @@ GET     /game/year/:year                    controllers.GameController.getGamesB
 GET     /game/userid/:id                    controllers.GameController.getGamesByUser(id:Long)
 GET     /game/within/:lat/:lon/:km          controllers.GameController.getGamesWithinDistance(lat:Double, lon:Double, km:Double)
 POST    /game/new                           controllers.GameController.addGame()
+POST    /game/id/:id/update                 controllers.GameController.updateGame(id:Long)
+#POST    /game/id/:id/delete                 controllers.GameController.deleteGame(id:Long)
 
 
 GET     /gamepost/all                           controllers.GamePostController.getAllGamePosts()

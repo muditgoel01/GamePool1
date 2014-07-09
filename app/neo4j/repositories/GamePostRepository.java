@@ -21,5 +21,8 @@ public interface GamePostRepository extends GraphRepository<GamePost> {
     @Query("MATCH (u:User)-[:POSTED]->(p:GamePost) WHERE id(u)={userId} RETURN distinct(p) as gamePost")
     List<GamePost> findGamePostsByUser(@Param("userId") long userId);
 
+//    @Query("MATCH (g:Game)<-[:POSTED]-(p:GamePost) WHERE id(g)={gameId} RETURN distinct(p) as gamePost")
+//    List<GamePost> findGamePostsByGame(@Param("gameId") long gameId);
+
 
 }

@@ -16,6 +16,8 @@ public class GamePost extends AbstractNode {
     @Indexed
     private String status;
 
+    private Integer views;
+
 	@Fetch
 	@RelatedTo(type = "POSTED", direction = Direction.INCOMING)
 	public User postedBy; //UserEdge.POSTED
@@ -43,6 +45,14 @@ public class GamePost extends AbstractNode {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Integer getViews() {
+        return views;
+    }
+
+    public void setViews(Integer views) {
+        this.views = views;
     }
 
     public User getPostedBy() {

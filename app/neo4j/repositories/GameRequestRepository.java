@@ -21,6 +21,9 @@ public interface GameRequestRepository extends GraphRepository<GameRequest> {
     @Query("MATCH (u:User)-[:REQUESTED]->(r:GameRequest) WHERE id(u)={userId} RETURN distinct(r) as gameRequest")
     List<GameRequest> findGameRequestsByUser(@Param("userId") long userId);
 
-    @Query("MATCH (r:GameRequest)-[:REQUESTED]->(p:GamePost) WHERE id(p)={gamePostId} RETURN distinct(r) as gameRequest")
-    List<GameRequest> findGameRequestsByGamePost(@Param("gamePostId") long gamePostId);
+//    @Query("MATCH (r:GameRequest)-[:REQUESTED]->(p:GamePost) WHERE id(p)={gamePostId} RETURN distinct(r) as gameRequest")
+//    List<GameRequest> findGameRequestsByGamePost(@Param("gamePostId") long gamePostId);
+
+//    @Query("MATCH (r:GameRequest)-[rel:REQUESTED]->(p:GamePost) WHERE id(r)={gameRequestId} RETURN distinct(r) as gameRequest")
+//    List<GameRequest> deleteGameRequestAndRelationships(@Param("gamePostId") long gamePostId);
 }
